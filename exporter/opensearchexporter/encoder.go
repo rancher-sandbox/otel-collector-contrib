@@ -165,6 +165,10 @@ func (m *encodeModel) encodeTrace(
 	sso.TraceID = span.TraceID().String()
 	sso.TraceState = span.TraceState().AsRaw()
 
+	if clusterID, ok := span.Attributes().Get("cluster_id"); ok {
+		sso.ClusterID = clusterID.AsString()
+	}
+
 	if span.Events().Len() > 0 {
 		sso.Events = make([]ssoSpanEvent, span.Events().Len())
 		for i := 0; i < span.Events().Len(); i++ {

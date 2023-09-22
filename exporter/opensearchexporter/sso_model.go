@@ -47,6 +47,7 @@ type ssoSpan struct {
 	Links        []ssoSpanLinks    `json:"links,omitempty"`
 	Name         string            `json:"name"`
 	ParentSpanID string            `json:"parentSpanId"`
+	ClusterID    string            `json:"cluster_id"`
 	Resource     map[string]string `json:"resource,omitempty"`
 	SpanID       string            `json:"spanId"`
 	StartTime    time.Time         `json:"startTime"`
