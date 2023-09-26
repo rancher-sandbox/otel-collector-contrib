@@ -162,11 +162,16 @@ func (m *encodeModel) encodeTrace(
 	sso.StartTime = span.StartTimestamp().AsTime()
 	sso.Status.Code = span.Status().Code().String()
 	sso.Status.Message = span.Status().Message()
+	sso.Timestamp = span.EndTimestamp().AsTime()
 	sso.TraceID = span.TraceID().String()
 	sso.TraceState = span.TraceState().AsRaw()
 
 	if clusterID, ok := span.Attributes().Get("cluster_id"); ok {
 		sso.ClusterID = clusterID.AsString()
+	}
+
+	if m.unixTime {
+		sso.TimeUnix = span.EndTimestamp().AsTime().UnixMilli()
 	}
 
 	if span.Events().Len() > 0 {

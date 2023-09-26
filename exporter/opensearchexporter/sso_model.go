@@ -55,6 +55,7 @@ type ssoSpan struct {
 		Code    string `json:"code"`
 		Message string `json:"message"`
 	} `json:"status"`
+	TimeUnix   int64     `json:"time"`
 	Timestamp  time.Time `json:"@timestamp"`
 	TraceID    string    `json:"traceId"`
 	TraceState string    `json:"traceState"`

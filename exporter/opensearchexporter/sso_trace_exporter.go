@@ -33,6 +33,7 @@ func newSSOTracesExporter(cfg *Config, set exporter.CreateSettings) (*ssoTracesE
 	model := &encodeModel{
 		dataset:   cfg.Dataset,
 		namespace: cfg.Namespace,
+		unixTime:  cfg.UnixTimestamp,
 	}
 
 	return &ssoTracesExporter{
