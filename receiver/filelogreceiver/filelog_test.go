@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-logr/zapr"
 	"github.com/observiq/nanojack"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -82,7 +83,7 @@ func TestReadStaticFile(t *testing.T) {
 	sink := new(consumertest.LogsSink)
 	cfg := testdataConfigYaml()
 
-	converter := adapter.NewConverter(zap.NewNop())
+	converter := adapter.NewConverter(zapr.NewLogger(zap.NewNop()))
 	converter.Start()
 	defer converter.Stop()
 
@@ -182,7 +183,7 @@ func (rt *rotationTest) Run(t *testing.T) {
 
 	// Build expected outputs
 	expectedTimestamp, _ := time.ParseInLocation("2006-01-02", "2020-08-25", time.Local)
-	converter := adapter.NewConverter(zap.NewNop())
+	converter := adapter.NewConverter(zapr.NewLogger(zap.NewNop()))
 	converter.Start()
 
 	var wg sync.WaitGroup

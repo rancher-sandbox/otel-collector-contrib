@@ -15,9 +15,9 @@ import (
 	"sync"
 
 	"github.com/cespare/xxhash/v2"
+	"github.com/go-logr/logr"
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/plog"
-	"go.uber.org/zap"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/entry"
 )
@@ -71,7 +71,7 @@ type Converter struct {
 	// when Stop() is called.
 	wg sync.WaitGroup
 
-	logger *zap.Logger
+	logger logr.Logger
 }
 
 type converterOption interface {
@@ -90,7 +90,7 @@ func (o workerCountOption) apply(c *Converter) {
 	c.workerCount = o.workerCount
 }
 
-func NewConverter(logger *zap.Logger, opts ...converterOption) *Converter {
+func NewConverter(logger logr.Logger, opts ...converterOption) *Converter {
 	c := &Converter{
 		workerChan:  make(chan []*entry.Entry),
 		workerCount: int(math.Max(1, float64(runtime.NumCPU()/4))),
@@ -106,7 +106,7 @@ func NewConverter(logger *zap.Logger, opts ...converterOption) *Converter {
 }
 
 func (c *Converter) Start() {
-	c.logger.Debug("Starting log converter", zap.Int("worker_count", c.workerCount))
+	c.logger.Info("Starting log converter", "worker_count", c.workerCount)
 
 	c.wg.Add(c.workerCount)
 	for i := 0; i < c.workerCount; i++ {
@@ -186,9 +186,8 @@ func (c *Converter) flushLoop() {
 
 		case pLogs := <-c.flushChan:
 			if err := c.flush(ctx, pLogs); err != nil {
-				c.logger.Debug("Problem sending log entries",
-					zap.Error(err),
-				)
+				c.logger.Info("Problem sending log entries",
+					"error", err)
 			}
 		}
 	}

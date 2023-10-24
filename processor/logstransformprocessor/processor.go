@@ -16,6 +16,7 @@ import (
 	"go.opentelemetry.io/collector/pdata/plog"
 	"go.uber.org/zap"
 
+	"github.com/go-logr/zapr"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/adapter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/operator"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/pipeline"
@@ -88,7 +89,7 @@ func (ltp *logsTransformProcessor) Start(ctx context.Context, _ component.Host) 
 
 	wkrCount := int(math.Max(1, float64(runtime.NumCPU())))
 
-	ltp.converter = adapter.NewConverter(ltp.logger)
+	ltp.converter = adapter.NewConverter(zapr.NewLogger(ltp.logger))
 	ltp.converter.Start()
 
 	ltp.fromConverter = adapter.NewFromPdataConverter(wkrCount, ltp.logger)
