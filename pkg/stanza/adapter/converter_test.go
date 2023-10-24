@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-logr/zapr"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/pdata/pcommon"
@@ -347,7 +348,7 @@ func TestAllConvertedEntriesAreSentAndReceived(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			t.Parallel()
 
-			converter := NewConverter(zap.NewNop())
+			converter := NewConverter(zapr.NewLogger(zap.NewNop()))
 			converter.Start()
 			defer converter.Stop()
 
@@ -409,7 +410,7 @@ func TestAllConvertedEntriesAreSentAndReceived(t *testing.T) {
 }
 
 func TestConverterCancelledContextCancellsTheFlush(t *testing.T) {
-	converter := NewConverter(zap.NewNop())
+	converter := NewConverter(zapr.NewLogger(zap.NewNop()))
 	converter.Start()
 	defer converter.Stop()
 	var wg sync.WaitGroup
@@ -822,7 +823,7 @@ func BenchmarkConverter(b *testing.B) {
 		b.Run(fmt.Sprintf("worker_count=%d", wc), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 
-				converter := NewConverter(zap.NewNop(), withWorkerCount(wc))
+				converter := NewConverter(zapr.NewLogger(zap.NewNop()), withWorkerCount(wc))
 				converter.Start()
 				defer converter.Stop()
 

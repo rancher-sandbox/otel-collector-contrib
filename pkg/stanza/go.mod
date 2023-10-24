@@ -6,6 +6,8 @@ require (
 	github.com/antonmedv/expr v1.15.0
 	github.com/bmatcuk/doublestar/v4 v4.6.0
 	github.com/cespare/xxhash/v2 v2.2.0
+	github.com/go-logr/logr v1.2.4
+	github.com/go-logr/zapr v1.2.4
 	github.com/influxdata/go-syslog/v3 v3.0.1-0.20210608084020-ac565dc76ba6
 	github.com/jpillora/backoff v1.0.0
 	github.com/json-iterator/go v1.1.12
