@@ -10,13 +10,13 @@ import (
 	"runtime"
 	"sync"
 
+	"github.com/go-logr/zapr"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/extension/experimental/storage"
 	"go.opentelemetry.io/collector/pdata/plog"
 	"go.uber.org/zap"
 
-	"github.com/go-logr/zapr"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/adapter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/operator"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/pipeline"
