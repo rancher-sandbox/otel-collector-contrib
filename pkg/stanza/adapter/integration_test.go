@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-logr/zapr"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componenttest"
@@ -51,7 +52,7 @@ func createNoopReceiver(nextConsumer consumer.Logs) (*receiver, error) {
 		emitter:   emitter,
 		consumer:  nextConsumer,
 		logger:    zap.NewNop(),
-		converter: NewConverter(zap.NewNop()),
+		converter: NewConverter(zapr.NewLogger(zap.NewNop())),
 		obsrecv:   obsrecv,
 	}, nil
 }

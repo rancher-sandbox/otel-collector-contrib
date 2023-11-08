@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"sync"
 
+	"github.com/go-logr/zapr"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/extension/experimental/storage"
@@ -88,7 +89,7 @@ func (ltp *logsTransformProcessor) Start(ctx context.Context, _ component.Host) 
 
 	wkrCount := int(math.Max(1, float64(runtime.NumCPU())))
 
-	ltp.converter = adapter.NewConverter(ltp.logger)
+	ltp.converter = adapter.NewConverter(zapr.NewLogger(ltp.logger))
 	ltp.converter.Start()
 
 	ltp.fromConverter = adapter.NewFromPdataConverter(wkrCount, ltp.logger)

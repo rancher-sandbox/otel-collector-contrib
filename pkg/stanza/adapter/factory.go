@@ -6,6 +6,7 @@ package adapter // import "github.com/open-telemetry/opentelemetry-collector-con
 import (
 	"context"
 
+	"github.com/go-logr/zapr"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/obsreport"
@@ -65,7 +66,7 @@ func createLogsReceiver(logReceiverType LogReceiverType) rcvr.CreateLogsFunc {
 		if baseCfg.numWorkers > 0 {
 			converterOpts = append(converterOpts, withWorkerCount(baseCfg.numWorkers))
 		}
-		converter := NewConverter(params.Logger, converterOpts...)
+		converter := NewConverter(zapr.NewLogger(params.Logger), converterOpts...)
 		obsrecv, err := obsreport.NewReceiver(obsreport.ReceiverSettings{
 			ReceiverID:             params.ID,
 			ReceiverCreateSettings: params,
