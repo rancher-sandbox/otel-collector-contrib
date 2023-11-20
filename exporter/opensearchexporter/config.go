@@ -44,6 +44,11 @@ type Config struct {
 	// https://opensearch.org/docs/latest/dashboards/im-dashboards/datastream/
 	LogsIndex string `mapstructure:"logs_index"`
 
+	// TraceIndex configures the index, index alias, or data stream name traces should be indexed in.
+	// https://opensearch.org/docs/latest/im-plugin/index/
+	// https://opensearch.org/docs/latest/dashboards/im-dashboards/datastream/
+	TraceIndex string `mapstructure:"trace_index"`
+
 	// BulkAction configures the action for ingesting data. Only `create` and `index` are allowed here.
 	// If not specified, the default value `create` will be used.
 	BulkAction string `mapstructure:"bulk_action"`
@@ -141,7 +146,7 @@ func (cfg *Config) Validate() error {
 	}
 
 	if cfg.BulkAction != "create" && cfg.BulkAction != "index" {
-		return errBulkActionInvalid
+		multiErr = append(multiErr, errBulkActionInvalid)
 	}
 
 	if _, ok := mappingModes[cfg.MappingsSettings.Mode]; !ok {

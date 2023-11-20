@@ -6,6 +6,7 @@ package opensearchexporter // import "github.com/open-telemetry/opentelemetry-co
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/opensearch-project/opensearch-go/v2"
 	"go.opentelemetry.io/collector/component"
@@ -17,8 +18,7 @@ import (
 
 type ssoTracesExporter struct {
 	client       *opensearch.Client
-	Namespace    string
-	Dataset      string
+	Index        string
 	bulkAction   string
 	model        mappingModel
 	httpSettings confighttp.HTTPClientSettings
@@ -38,8 +38,7 @@ func newSSOTracesExporter(cfg *Config, set exporter.CreateSettings) (*ssoTracesE
 
 	return &ssoTracesExporter{
 		telemetry:    set.TelemetrySettings,
-		Namespace:    cfg.Namespace,
-		Dataset:      cfg.Dataset,
+		Index:        getTraceIndexName(cfg.Dataset, cfg.Namespace, cfg.TraceIndex),
 		bulkAction:   cfg.BulkAction,
 		model:        model,
 		httpSettings: cfg.HTTPClientSettings,
@@ -62,7 +61,7 @@ func (s *ssoTracesExporter) Start(_ context.Context, host component.Host) error 
 }
 
 func (s *ssoTracesExporter) pushTraceData(ctx context.Context, td ptrace.Traces) error {
-	indexer := newTraceBulkIndexer(s.Dataset, s.Namespace, s.bulkAction, s.model)
+	indexer := newTraceBulkIndexer(s.Index, s.bulkAction, s.model)
 	startErr := indexer.start(s.client)
 	if startErr != nil {
 		return startErr
@@ -86,4 +85,12 @@ func newOpenSearchClient(endpoint string, httpClient *http.Client, logger *zap.L
 		EnableDebugLogger: false, // TODO
 		Logger:            newClientLogger(logger),
 	})
+}
+
+func getTraceIndexName(dataset, namespace, index string) string {
+	if len(index) != 0 {
+		return index
+	}
+
+	return strings.Join([]string{"ss4o_traces", dataset, namespace}, "-")
 }
